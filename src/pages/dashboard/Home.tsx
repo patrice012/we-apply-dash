@@ -10,8 +10,8 @@ export default function Dashboard() {
   return (
     <AppLayout>
       <div className="pb-4 pt-[10px] px-4 h-[90vh] bg-gray-100 w-full flex  ">
-        <div className="rounded-[28px] flex flex-col py-8 px-8 h-full w-full scrollbar scrollbar-thumb-[#d4d4d4] scrollbar-w-[7px] scrollbar-thumb-rounded-full overflow-y-auto pb-10 bg-white gap-[28px] ">
-          <div className="flex w-full justify-between items-center">
+        <div className="rounded-[28px] flex flex-col py-8 px-6 xl:px-8 h-full w-full scrollbar scrollbar-thumb-[#d4d4d4] scrollbar-w-[7px] scrollbar-thumb-rounded-full overflow-y-auto pb-10 bg-white gap-[28px] ">
+          <div className="flex sm:flex-row flex-col gap-3 w-full justify-between sm:items-center">
             <span className="font-bold text-[24px]">
               Good evening, Omer Hassan!
             </span>
@@ -19,7 +19,7 @@ export default function Dashboard() {
               <span>Application Status</span>
             </div>
           </div>
-          <div className="grid grid-cols-3 col-span-3 items-center w-full gap-3 xl:gap-5">
+          <div className="grid  lg:grid-cols-3 col-span-3 items-center w-full gap-3 xl:gap-5">
             <div className="flex bg-[#FFCDD3] p-4 gap-4 rounded-xl">
               <div className="bg-[#fff] rounded-[7px] p-[16px] ">
                 <Link21 color="#DF4425" size={40} />
@@ -54,11 +54,11 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="flex items-center w-full justify-between">
+          <div className="flex sm:flex-row flex-col items-start gap-3 sm:items-center w-full justify-between">
             <span className="text-gray-800 text-[24px] font-bold">
               Job Dashboard (112)
             </span>
-            <div className="flex relative items-center gap-3">
+            <div className="flex relative w-full sm:w-auto items-center gap-3">
               <div className="border-2 rounded-full flex justify-center items-center size-10 ">
                 <Filter size={25} />
               </div>
@@ -66,7 +66,7 @@ export default function Dashboard() {
               <input
                 type="text"
                 placeholder="Search..."
-                className="border w-[250px] py-2 pl-4 pr-10 rounded-full border-gray-300"
+                className="border w-full sm:w-[250px] py-2 pl-4 pr-10 rounded-full border-gray-300"
               />
             </div>
           </div>
