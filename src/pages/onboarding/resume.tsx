@@ -6,8 +6,14 @@ import {
   InfoCircle,
 } from "iconsax-react";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
 
 export default function Resume() {
+  const file = useRef<HTMLInputElement | null>();
+
+  const ChooseFile = () => {
+    file.current?.click();
+  };
   return (
     <div className=" bg-gray-200  h-full bg-[url('/Rectangle.svg')] pb-8 bg-contain bg-no-repeat">
       <div className="flex flex-col gap-4 px-4 lg:px-12 w-full">
@@ -89,12 +95,13 @@ export default function Resume() {
               </div>
               <div className="flex flex-col relative gap-2 w-full">
                 <span className="font-semibold text-xs">Resume</span>
-                <div className="flex flex-col gap-5 w-full">
+                <div onClick={ChooseFile} className="flex flex-col gap-5 w-full">
                   <div className="flex flex-col items-center gap-2 justify-center border rounded-xl h-[220px] bg-[#fff]">
                     <DocumentUpload size={25} color="#000" />
                     <span>Click or Drag & Drop Your Resume</span>
                   </div>
                 </div>
+                <input ref={file} type="text" className="hidden" />
                 <div className="flex md:flex-row flex-col gap-2 text-sm justify-between items-center">
                   <span>Supported formats: PDF only</span>
                   <div className="flex gap-1 items-center">
@@ -124,7 +131,7 @@ export default function Resume() {
               <button className="border py-4 font-semibold rounded-lg w-full">
                 Skip for now
               </button>
-              <Link to="/personalInfo" className="flex w-full " >
+              <Link to="/personalInfo" className="flex w-full ">
                 <button className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
                   <ArrowRight2 size={18} color="#fff" />
                   <span>Continue</span>

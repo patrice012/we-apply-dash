@@ -1,5 +1,4 @@
 import {
-  ArrowDown2,
   ArrowLeft2,
   ArrowRight2,
   CallCalling,
@@ -68,25 +67,7 @@ export default function Career() {
                   Integer tempor ut ipsum amet interdum diam leo morbi. Libero.
                 </span>
               </div>
-              <div className="border rounded-lg items-start sm:flex-row flex-col flex gap-3 border-[#DCD7FE]">
-                <img src="/flash.svg" className="p-4" alt="" />
-                <div className="flex flex-col px-4 sm:py-4 gap-1">
-                  <span className="text-sm text-[#F83E3E] font-bold">
-                    Autofill data
-                  </span>
-                  <span>
-                    Save time by importing your resume. Documents must be
-                    smaller than 10MB.
-                  </span>
-                </div>
-                <div className="flex flex-col py-4 px-4 text-white ">
-                  <button className="px-4 py-2 flex items-center gap-2 rounded-[4px] text-nowrap flex-nowrap bg-[#F83E3E]">
-                    Import resume from{" "}
-                    <div className="h-[15px] w-[1px] bg-white "></div>
-                    <ArrowDown2 size={15} color="#fff" />
-                  </button>
-                </div>
-              </div>
+              
               <div className="flex flex-col relative gap-2 w-full">
                 <span className="font-semibold text-xs">
                   Years of experience*

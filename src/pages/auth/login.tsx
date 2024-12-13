@@ -1,8 +1,12 @@
 /* eslint-disable no-irregular-whitespace */
-import { Sms, Key, EyeSlash } from "iconsax-react";
+import { Sms, Key, EyeSlash, Eye } from "iconsax-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Login() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [password, setPassword] = useState("");
+
   return (
     <div className="grid grid-cols-2 h-screen col-span-2 w-full">
       <div className="hidden lg:grid col-span-1  items-center  w-full justify-center px-[80px] bg-contain bg-[url('/graphics.svg')] bg-[#682ae3e4]">
@@ -57,15 +61,27 @@ export default function Login() {
                   color="#1f2937"
                   className="absolute left-4 top-[34px]"
                 />
-                <EyeSlash
-                  size={20}
-                  color="#1f2937"
-                  className="absolute right-4 top-[34px]"
-                />
+                {passwordVisible ? (
+                  <Eye
+                    size={20}
+                    color="#1f2937"
+                    className="absolute right-4 top-[34px] cursor-pointer"
+                    onClick={() => setPasswordVisible(false)}
+                  />
+                ) : (
+                  <EyeSlash
+                    size={20}
+                    color="#1f2937"
+                    className="absolute right-4 top-[34px] cursor-pointer"
+                    onClick={() => setPasswordVisible(true)}
+                  />
+                )}
                 <input
-                  type="password"
-                  className="w-full border-gray-200 border rounded-[8px] py-2 px-10 "
-                  placeholder="Enter your full name"
+                  type={passwordVisible ? "text" : "password"}
+                  className="w-full border-gray-200 border rounded-[8px] py-2 px-10"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <Link to="/forgot">
