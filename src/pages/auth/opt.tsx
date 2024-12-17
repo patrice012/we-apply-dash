@@ -1,9 +1,11 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
-export default function Otp() {
+
+export default function Otp(  ) {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  
 
   const handleChange = (index: number, value: string) => {
     // Limiter à un seul caractère
@@ -60,6 +62,18 @@ export default function Otp() {
     inputRefs.current[lastIndex]?.focus();
   };
 
+  const handleVerifyOtp = async () => {
+    try {
+      console.log(otp.join(""));
+      /*  const res = await verifyOTP({ email, code });
+      if (res.status == 200) {
+        navigate("/Opt");
+      } */
+    } catch (err) {
+      return console.log(err);
+    }
+  };
+
   return (
     <div className="h-screen bg-gray-300">
       <div className="flex w-full px-[60px] h-[12vh] items-center bg-white shadow-md">
@@ -92,13 +106,13 @@ export default function Otp() {
                 />
               ))}
             </div>
-            <Link to="/resume">
-              <button
-                onClick={() => console.log("OTP Entered:", otp.join(""))}
-                className="bg-[#F83E3E] w-full py-4 rounded-lg text-white font-semibold text-[18px]">
-                Continue
-              </button>
-            </Link>
+
+            <button
+              onClick={() => handleVerifyOtp}
+              className="bg-[#F83E3E] w-full py-4 rounded-lg text-white font-semibold text-[18px]">
+              Continue
+            </button>
+
             <Link
               className="w-full flex items-center justify-center"
               to="/login">
