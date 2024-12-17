@@ -6,13 +6,30 @@ import {
   InfoCircle,
 } from "iconsax-react";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import postReq from "../../utils/PostReq";
+import { useNavigate } from "react-router-dom";
 
 export default function Resume() {
   const file = useRef<HTMLInputElement | null>();
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [coverLetter, setCoverLetter] = useState("");
+  const navigate = useNavigate();
 
   const ChooseFile = () => {
     file.current?.click();
+  };
+
+  const addResume = async () => {
+    try {
+      const res = await postReq({ url: "/account/resume", data: {} });
+      if (res.status == 201) {
+        navigate("/personalInfo");
+      }
+    } catch (err) {
+      console.log("error :", err);
+    }
   };
   return (
     <div className=" bg-gray-200  h-full bg-[url('/Rectangle.svg')] pb-8 bg-contain bg-no-repeat">
@@ -95,7 +112,9 @@ export default function Resume() {
               </div>
               <div className="flex flex-col relative gap-2 w-full">
                 <span className="font-semibold text-xs">Resume</span>
-                <div onClick={ChooseFile} className="flex flex-col gap-5 w-full">
+                <div
+                  onClick={ChooseFile}
+                  className="flex flex-col gap-5 w-full">
                   <div className="flex flex-col items-center gap-2 justify-center border rounded-xl h-[220px] bg-[#fff]">
                     <DocumentUpload size={25} color="#000" />
                     <span>Click or Drag & Drop Your Resume</span>
@@ -128,15 +147,17 @@ export default function Resume() {
               </div>
             </div>
             <div className="flex gap-6 w-full  items-center">
-              <button className="border py-4 font-semibold rounded-lg w-full">
-                Skip for now
-              </button>
-              <Link to="/personalInfo" className="flex w-full ">
-                <button className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
-                  <ArrowRight2 size={18} color="#fff" />
-                  <span>Continue</span>
+              <Link className="flex w-full" to="/personalInfo">
+                <button className="border py-4 font-semibold rounded-lg w-full">
+                  Skip for now
                 </button>
               </Link>
+              <button
+                onClick={addResume}
+                className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
+                <ArrowRight2 size={18} color="#fff" />
+                <span>Continue</span>
+              </button>
             </div>
           </div>
         </div>

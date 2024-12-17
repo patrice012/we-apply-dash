@@ -6,6 +6,9 @@ export default function Qualification() {
   // State to manage skills and certifications fields
   const [skills, setSkills] = useState([""]);
   const [certifications, setCertifications] = useState([""]);
+  const [educationLevel, setEducationLevel] = useState("");
+  const [field, setField] = useState("");
+  const [qualification, setQualification] = useState("");
 
   // Handler to add a new skill field
   const addSkill = () => {
@@ -102,6 +105,9 @@ export default function Qualification() {
                 <select
                   name=""
                   id=""
+                  onChange={(e) => {
+                    setEducationLevel(e.target.value);
+                  }}
                   className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 ">
                   <option value="">Lorem ipsum 1</option>
                   <option value="">Lorem ipsum 2 </option>
@@ -115,6 +121,9 @@ export default function Qualification() {
                   type="text"
                   className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 "
                   placeholder="Enter your job title"
+                  onChange={(e) => {
+                    setField(e.target.value);
+                  }}
                 />
               </div>
               {/* Skills Fields */}
@@ -169,6 +178,9 @@ export default function Qualification() {
                     name=""
                     id=""
                     maxLength={240}
+                    onChange={(e) => {
+                      setQualification(e.target.value);
+                    }}
                     className=" border p-4 h-[148px] rounded-xl"
                     placeholder="Write other qualifications if have"></textarea>
                   <div className="flex text-xs justify-between w-full items-center">

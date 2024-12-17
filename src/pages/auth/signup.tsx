@@ -12,6 +12,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const [sendOtp, setSendOtp] = useState(false);
+  
 
   const googleLogin = async (e: {
     stopPropagation: () => void;
