@@ -128,7 +128,7 @@ export default function Signup() {
       if (res.status == 200) {
         const sign = await signup({ fullname, email, password });
         console.log(sign)
-        if (sign.status == 200) {
+        if (sign.status == 201) {
           return navigate("/Resume");
         }
       }

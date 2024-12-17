@@ -4,10 +4,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { signinWithGoogle } from "../../firebase/googleAuth";
 import { useNavigate } from "react-router-dom";
+import { signin } from "../../utils/auth";
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   const googleLogin = async (e: {
@@ -28,12 +30,22 @@ export default function Login() {
         console.log(data);
         navigate("/Resume");
       } else {
-        console.log("error login with google")
+        console.log("error login with google");
       }
     } catch (error) {
       const err = error as Error;
       console.log(err.message);
-      
+    }
+  };
+
+  const Login = async () => {
+    try {
+      const res = await signin({ email, password });
+      if (res.status == 200) {
+        return navigate("/Resume");
+      }
+    } catch (err) {
+      console.log("error :", err);
     }
   };
 
@@ -82,6 +94,9 @@ export default function Login() {
                   type="text"
                   className="w-full border-gray-200 border rounded-[8px] py-2 px-10 "
                   placeholder="Enter email"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                 />
               </div>
               <div className="flex flex-col relative gap-2 w-full">
@@ -128,18 +143,21 @@ export default function Login() {
                   of www.ideclouds.net
                 </span>
               </div>
-              <Link to="/otp">
-                <button className="bg-[#F83E3E] w-full py-4 rounded-lg text-white font-semibold text-[18px]">
-                  Create your account
-                </button>
-              </Link>
+
+              <button
+                onClick={Login}
+                className="bg-[#F83E3E] w-full py-4 rounded-lg text-white font-semibold text-[18px]">
+                Login
+              </button>
             </div>
             <div className="flex items-center gap-2 w-full">
               <div className="flex w-full h-[1px] bg-[#D1D5DB]"></div>{" "}
               <span>Or</span>{" "}
               <div className="flex w-full h-[1px] bg-[#D1D5DB]"></div>
             </div>
-            <button  onClick={googleLogin} className=" w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black  text-[16px]">
+            <button
+              onClick={googleLogin}
+              className=" w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black  text-[16px]">
               <img src="/google.svg" alt="" /> Continue with Google
             </button>
             <span className="text-center">

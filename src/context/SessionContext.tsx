@@ -1,19 +1,13 @@
-/* import { useContext, createContext, type PropsWithChildren } from "react";
-import { useStorageState } from "../hooks/useStorageHook";
-import postReq from "../helpers/postReq";
-import { IUser, ResponseData } from "../helpers/types";
-import UserContext from "./UserContext";
+import { useContext, createContext, type PropsWithChildren } from "react";
+
+
 
 const AuthContext = createContext<{
-  signIn: (data: any) => Promise<boolean | IUser>;
-  signOut: () => void;
-  checkConnection: () => void;
+ 
   session?: string | null;
   isLoading: boolean;
 }>({
-  signIn: async () => false,
-  signOut: () => null,
-  checkConnection: () => null,
+ 
   session: null,
   isLoading: false,
 });
@@ -78,4 +72,3 @@ export function SessionProvider({ children }: PropsWithChildren) {
     </AuthContext.Provider>
   );
 }
- */
