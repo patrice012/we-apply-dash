@@ -3,6 +3,7 @@ import { EyeSlash, Eye, Key, Sms, User } from "iconsax-react";
 import { Link } from "react-router-dom";
 import { sendOTP, signup, verifyOTP } from "../../utils/auth";
 import { useNavigate } from "react-router-dom";
+import { signinWithGoogle } from "../../firebase/googleAuth";
 
 export default function Signup() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -11,6 +12,32 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const [sendOtp, setSendOtp] = useState(false);
+
+  const googleLogin = async (e: {
+    stopPropagation: () => void;
+    preventDefault: () => void;
+  }) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    try {
+      const user = await signinWithGoogle();
+      if (user) {
+        const data = {
+          uid: user.uid,
+          email: user.email,
+          name: user.displayName,
+        };
+        console.log(data);
+        navigate("/Resume");
+      } else {
+        console.log("error login with google");
+      }
+    } catch (error) {
+      const err = error as Error;
+      console.log(err.message);
+    }
+  };
 
   // Évalue la qualité du mot de passe
   const getPasswordStrength = () => {
@@ -100,9 +127,8 @@ export default function Signup() {
       const res = await verifyOTP({ email, code });
       if (res.status == 200) {
         const sign = await signup({ fullname, email, password });
+        console.log(sign)
         if (sign.status == 200) {
-
-          
           return navigate("/Resume");
         }
       }
@@ -333,7 +359,9 @@ export default function Signup() {
                   <span>Or</span>{" "}
                   <div className="flex w-full h-[1px] bg-[#D1D5DB]"></div>
                 </div>
-                <button className="w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black text-[16px]">
+                <button
+                  onClick={googleLogin}
+                  className="w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black text-[16px]">
                   <img src="/google.svg" alt="" /> Continue with Google
                 </button>
                 <span className="text-center">

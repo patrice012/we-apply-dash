@@ -2,10 +2,40 @@
 import { Sms, Key, EyeSlash, Eye } from "iconsax-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signinWithGoogle } from "../../firebase/googleAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const googleLogin = async (e: {
+    stopPropagation: () => void;
+    preventDefault: () => void;
+  }) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    try {
+      const user = await signinWithGoogle();
+      if (user) {
+        const data = {
+          uid: user.uid,
+          email: user.email,
+          name: user.displayName,
+        };
+        console.log(data);
+        navigate("/Resume");
+      } else {
+        console.log("error login with google")
+      }
+    } catch (error) {
+      const err = error as Error;
+      console.log(err.message);
+      
+    }
+  };
 
   return (
     <div className="grid grid-cols-2 h-screen col-span-2 w-full">
@@ -109,7 +139,7 @@ export default function Login() {
               <span>Or</span>{" "}
               <div className="flex w-full h-[1px] bg-[#D1D5DB]"></div>
             </div>
-            <button className=" w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black  text-[16px]">
+            <button  onClick={googleLogin} className=" w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black  text-[16px]">
               <img src="/google.svg" alt="" /> Continue with Google
             </button>
             <span className="text-center">

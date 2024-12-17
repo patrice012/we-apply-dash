@@ -20,7 +20,7 @@ export const signup = async ({
   password: string;
 }) => {
   const res = await postReq({
-    url: "/auth/login",
+    url: "/auth/register",
     data: { fullname, email, password },
   });
   return res;
