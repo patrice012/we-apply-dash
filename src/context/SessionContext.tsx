@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, createContext, type PropsWithChildren } from "react";
 import { useStorageState } from "../hooks/useStorageHook";
@@ -32,8 +33,7 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [[_iLoading, loginData], setLoginData] = useStorageState("userData");
+  const [[iLoading, loginData], setLoginData] = useStorageState("userData");
 
   return (
     <AuthContext.Provider

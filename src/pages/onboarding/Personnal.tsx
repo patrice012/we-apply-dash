@@ -47,6 +47,7 @@ export default function Personal() {
       setLoading(true);
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const value = (formData as any)[key];
         if (value) data.append(key, value);
       });
