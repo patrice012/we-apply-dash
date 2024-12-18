@@ -1,25 +1,28 @@
 import { Add, ArrowLeft2, ArrowRight2, CallCalling } from "iconsax-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import { useSession } from "../../context/SessionContext";
+import postReq from "../../utils/PostReq";
 
 export default function Qualification() {
-  // State to manage skills and certifications fields
+  const [Loading, setLoading] = useState(false);
+  const { session, loginData } = useSession();
+  const extras = [{ key: "authorization", value: "Bearer " + session }];
   const [skills, setSkills] = useState([""]);
   const [certifications, setCertifications] = useState([""]);
   const [educationLevel, setEducationLevel] = useState("");
   const [field, setField] = useState("");
   const [qualification, setQualification] = useState("");
+  const navigate = useNavigate();
 
-  
   const addSkill = () => {
     setSkills([...skills, ""]);
   };
 
-  
   const addCertification = () => {
     setCertifications([...certifications, ""]);
   };
-
 
   const updateSkill = (index: number, value: string) => {
     const updatedSkills = [...skills];
@@ -27,11 +30,39 @@ export default function Qualification() {
     setSkills(updatedSkills);
   };
 
- 
   const updateCertification = (index: number, value: string) => {
     const updatedCertifications = [...certifications];
     updatedCertifications[index] = value;
     setCertifications(updatedCertifications);
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const response = await postReq({
+        data: {
+          userId: loginData,
+          educationLevel: educationLevel,
+          field: field,
+          skills,
+          certifications,
+          qualification: qualification,
+        },
+        url: "/account/education",
+        extras,
+      });
+
+      console.log(response);
+      setLoading(false);
+      if (response.status == 201) {
+        navigate("/done");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error submitting form:", error);
+      alert("An error occurred while submitting the form.");
+    }
   };
 
   return (
@@ -109,9 +140,9 @@ export default function Qualification() {
                     setEducationLevel(e.target.value);
                   }}
                   className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 ">
-                  <option value="">Lorem ipsum 1</option>
-                  <option value="">Lorem ipsum 2 </option>
-                  <option value="">Lorem ipsum 3 </option>
+                  <option value="Lorem ipsum 1">Lorem ipsum 1</option>
+                  <option value="Lorem ipsum 2">Lorem ipsum 2 </option>
+                  <option value="Lorem ipsum 3">Lorem ipsum 3 </option>
                 </select>
               </div>
               <div className="flex flex-col relative gap-2 w-full">
@@ -191,15 +222,24 @@ export default function Qualification() {
               </div>
             </div>
             <div className="flex gap-6 w-full  items-center">
-              <button className="border py-4 font-semibold rounded-lg w-full">
-                Skip for now
-              </button>
               <Link to="/done" className="flex w-full ">
-                <button className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
-                  <ArrowRight2 size={18} color="#fff" />
-                  <span>Continue</span>
+                <button className="border py-4 font-semibold rounded-lg w-full">
+                  Skip for now
                 </button>
               </Link>
+              <button
+                onClick={handleSubmit}
+                className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
+                <ClipLoader
+                  color="#fff"
+                  loading={Loading}
+                  size={25}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+                <ArrowRight2 size={18} color="#fff" />
+                <span>Continue</span>
+              </button>
             </div>
           </div>
         </div>
