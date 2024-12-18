@@ -6,15 +6,15 @@ import {
   InfoCircle,
 } from "iconsax-react";
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import postReq from "../../utils/PostReq";
 import { useNavigate } from "react-router-dom";
 
 export default function Resume() {
   const file = useRef<HTMLInputElement | null>();
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [portfolioUrl, setPortfolioUrl] = useState("");
-  const [coverLetter, setCoverLetter] = useState("");
+  // const [linkedinUrl, setLinkedinUrl] = useState("");
+  // const [portfolioUrl, setPortfolioUrl] = useState("");
+  // const [coverLetter, setCoverLetter] = useState("");
   const navigate = useNavigate();
 
   const ChooseFile = () => {
@@ -114,13 +114,18 @@ export default function Resume() {
                 <span className="font-semibold text-xs">Resume</span>
                 <div
                   onClick={ChooseFile}
-                  className="flex flex-col gap-5 w-full">
+                  className="flex flex-col gap-5 w-full"
+                >
                   <div className="flex flex-col items-center gap-2 justify-center border rounded-xl h-[220px] bg-[#fff]">
                     <DocumentUpload size={25} color="#000" />
                     <span>Click or Drag & Drop Your Resume</span>
                   </div>
                 </div>
-                <input ref={file} type="text" className="hidden" />
+                <input
+                  ref={file as React.MutableRefObject<HTMLInputElement | null>}
+                  type="text"
+                  className="hidden"
+                />
                 <div className="flex md:flex-row flex-col gap-2 text-sm justify-between items-center">
                   <span>Supported formats: PDF only</span>
                   <div className="flex gap-1 items-center">
@@ -138,7 +143,8 @@ export default function Resume() {
                     id=""
                     maxLength={240}
                     className=" border p-4 h-[148px] rounded-xl"
-                    placeholder="Write something about yourself"></textarea>
+                    placeholder="Write something about yourself"
+                  ></textarea>
                   <div className="flex text-xs justify-between w-full items-center">
                     <span>You have 240 characters remaining</span>
                     <span>0/240</span>
@@ -154,7 +160,8 @@ export default function Resume() {
               </Link>
               <button
                 onClick={addResume}
-                className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
+                className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] "
+              >
                 <ArrowRight2 size={18} color="#fff" />
                 <span>Continue</span>
               </button>

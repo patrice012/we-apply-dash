@@ -1,6 +1,6 @@
 import { deleteUser, User } from "firebase/auth";
 import { FirebaseAuth as auth } from "./config";
-import postReq from "@/helpers/postReq";
+import postReq from "../utils/PostReq";
 
 export const deleteAccount = async (): Promise<boolean> => {
   try {
