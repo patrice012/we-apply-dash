@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ArrowLeft2,
   ArrowRight2,
@@ -36,7 +37,7 @@ export default function Personal() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setFormData({ ...formData, pictureUrl: file });
+      setFormData({ ...formData, pictureUrl: file as any });
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -47,7 +48,7 @@ export default function Personal() {
       setLoading(true);
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
         const value = (formData as any)[key];
         if (value) data.append(key, value);
       });

@@ -30,7 +30,7 @@ export default function Resume() {
 
   const handleDivClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click();
+      (fileInputRef.current as any).click();
     }
   };
 

@@ -30,6 +30,14 @@ export default function Qualification() {
     setSkills(updatedSkills);
   };
 
+  const removeSkill = (index: number) => {
+    setSkills(skills.filter((_, i) => i !== index));
+  };
+
+  const removeCertification = (index: number) => {
+    setCertifications(certifications.filter((_, i) => i !== index));
+  };
+
   const updateCertification = (index: number, value: string) => {
     const updatedCertifications = [...certifications];
     updatedCertifications[index] = value;
@@ -163,19 +171,27 @@ export default function Qualification() {
                   Skills and competencies*
                 </span>
                 {skills.map((skill, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 mb-2"
-                    placeholder="Add skills"
-                    value={skill}
-                    onChange={(e) => updateSkill(index, e.target.value)}
-                  />
+                  <div key={index} className="flex items-center gap-2 mb-2">
+                    <input
+                      type="text"
+                      className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4"
+                      placeholder="Add skills"
+                      value={skill}
+                      onChange={(e) => updateSkill(index, e.target.value)}
+                    />
+                    {index !== 0 && (
+                      <button
+                        onClick={() => removeSkill(index)}
+                        className="text-red-500 text-sm font-semibold">
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 ))}
+
                 <div
                   className="flex items-center font-medium text-sm text-[#571EC4] gap-1 cursor-pointer"
-                  onClick={addSkill}
-                >
+                  onClick={addSkill}>
                   <Add size={20} />
                   <span>Add another</span>
                 </div>
@@ -185,19 +201,29 @@ export default function Qualification() {
               <div className="flex flex-col gap-2 w-full">
                 <span className="font-semibold text-xs">Certifications*</span>
                 {certifications.map((certification, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 mb-2"
-                    placeholder="Add certification"
-                    value={certification}
-                    onChange={(e) => updateCertification(index, e.target.value)}
-                  />
+                  <div key={index} className="flex items-center gap-2 mb-2">
+                    <input
+                      type="text"
+                      className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4"
+                      placeholder="Add certification"
+                      value={certification}
+                      onChange={(e) =>
+                        updateCertification(index, e.target.value)
+                      }
+                    />
+                    {index !== 0 && (
+                      <button
+                        onClick={() => removeCertification(index)}
+                        className="text-red-500 text-sm font-semibold">
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 ))}
+
                 <div
                   className="flex items-center font-medium text-sm text-[#571EC4] gap-1 cursor-pointer"
-                  onClick={addCertification}
-                >
+                  onClick={addCertification}>
                   <Add size={20} />
                   <span>Add another</span>
                 </div>
@@ -215,8 +241,7 @@ export default function Qualification() {
                       setQualification(e.target.value);
                     }}
                     className=" border p-4 h-[148px] rounded-xl"
-                    placeholder="Write other qualifications if have"
-                  ></textarea>
+                    placeholder="Write other qualifications if have"></textarea>
                   <div className="flex text-xs justify-between w-full items-center">
                     <span>You have 240 characters remaining</span>
                     <span>0/240</span>
