@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import postReq from "./PostReq";
 export const signin = async ({
   email,
@@ -21,6 +22,22 @@ export const signup = async ({
 }) => {
   const res = await postReq({
     url: "/auth/register",
+    data: { fullname, email, password },
+  });
+  return res;
+};
+
+export const googleSign = async ({
+  fullname,
+  email,
+  password,
+}: {
+  fullname: any;
+  email: any;
+  password: string;
+}) => {
+  const res = await postReq({
+    url: "/auth/googleLogin",
     data: { fullname, email, password },
   });
   return res;

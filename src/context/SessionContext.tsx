@@ -8,12 +8,14 @@ const AuthContext = createContext<{
   setSession: any;
   setLoginData: any;
   loginData: any;
+  iLoading: boolean;
 }>({
   session: null,
   isLoading: false,
   setSession: null,
   setLoginData: null,
   loginData: null,
+  iLoading: false,
 });
 
 // This hook can be used to access the user info.
@@ -40,6 +42,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         isLoading,
         setLoginData,
         loginData,
+        iLoading,
       }}>
       {children}
     </AuthContext.Provider>
