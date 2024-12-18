@@ -1,4 +1,4 @@
-import postReq from "../helpers/postReq";
+import postReq from "../utils/PostReq";
 
 export const saveCredentials = async ({
   data,

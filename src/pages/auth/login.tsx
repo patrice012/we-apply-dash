@@ -73,7 +73,7 @@ export default function Login() {
       <div className="hidden lg:grid col-span-1  items-center  w-full justify-center px-[80px] bg-contain bg-[url('/graphics.svg')] bg-[#682ae3e4]">
         <div className="pt-[200px] text-white flex flex-col items-center justify-center gap-6 w-full ">
           <div className="flex gap-1 items-center ">
-            {Array.from({ length: 5 }).map((em, idx) => (
+            {Array.from({ length: 5 }).map((_, idx) => (
               <img key={idx} src="/Star.svg" alt="" />
             ))}
           </div>
@@ -165,7 +165,8 @@ export default function Login() {
 
               <button
                 onClick={Login}
-                className="bg-[#F83E3E] w-full py-4 rounded-lg text-white font-semibold text-[18px]">
+                className="bg-[#F83E3E] w-full py-4 rounded-lg text-white font-semibold text-[18px]"
+              >
                 Login
               </button>
             </div>
@@ -176,7 +177,8 @@ export default function Login() {
             </div>
             <button
               onClick={googleLogin}
-              className=" w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black  text-[16px]">
+              className=" w-full border-gray-200 border justify-center flex gap-4 items-center py-4 rounded-lg text-black  text-[16px]"
+            >
               <img src="/google.svg" alt="" /> Continue with Google
             </button>
             <span className="text-center">

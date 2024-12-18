@@ -174,7 +174,8 @@ export default function Qualification() {
                 ))}
                 <div
                   className="flex items-center font-medium text-sm text-[#571EC4] gap-1 cursor-pointer"
-                  onClick={addSkill}>
+                  onClick={addSkill}
+                >
                   <Add size={20} />
                   <span>Add another</span>
                 </div>
@@ -195,7 +196,8 @@ export default function Qualification() {
                 ))}
                 <div
                   className="flex items-center font-medium text-sm text-[#571EC4] gap-1 cursor-pointer"
-                  onClick={addCertification}>
+                  onClick={addCertification}
+                >
                   <Add size={20} />
                   <span>Add another</span>
                 </div>
@@ -213,7 +215,8 @@ export default function Qualification() {
                       setQualification(e.target.value);
                     }}
                     className=" border p-4 h-[148px] rounded-xl"
-                    placeholder="Write other qualifications if have"></textarea>
+                    placeholder="Write other qualifications if have"
+                  ></textarea>
                   <div className="flex text-xs justify-between w-full items-center">
                     <span>You have 240 characters remaining</span>
                     <span>0/240</span>

@@ -32,7 +32,8 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
-  const [[iLoading, loginData], setLoginData] = useStorageState("userData");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [[_iLoading, loginData], setLoginData] = useStorageState("userData");
 
   return (
     <AuthContext.Provider
