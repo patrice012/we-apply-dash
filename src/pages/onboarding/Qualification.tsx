@@ -10,24 +10,24 @@ export default function Qualification() {
   const [field, setField] = useState("");
   const [qualification, setQualification] = useState("");
 
-  // Handler to add a new skill field
+  
   const addSkill = () => {
     setSkills([...skills, ""]);
   };
 
-  // Handler to add a new certification field
+  
   const addCertification = () => {
     setCertifications([...certifications, ""]);
   };
 
-  // Handler to update the value of a specific skill field
+
   const updateSkill = (index: number, value: string) => {
     const updatedSkills = [...skills];
     updatedSkills[index] = value;
     setSkills(updatedSkills);
   };
 
-  // Handler to update the value of a specific certification field
+ 
   const updateCertification = (index: number, value: string) => {
     const updatedCertifications = [...certifications];
     updatedCertifications[index] = value;

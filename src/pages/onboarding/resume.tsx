@@ -12,6 +12,7 @@ import { useRef, useState } from "react";
 import postReq from "../../utils/PostReq";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../../context/SessionContext";
+import { ClipLoader } from "react-spinners";
 
 export default function Resume() {
   const fileInputRef = useRef(null);
@@ -23,6 +24,7 @@ export default function Resume() {
   const [resume, setResume] = useState<File | null>(null);
   const [isFile, setIsFile] = useState(false);
   const navigate = useNavigate();
+  const [Loading, setLoading] = useState(false);
   const { session, loginData } = useSession();
   const extras = [{ key: "authorization", value: "Bearer " + session }];
 
@@ -66,7 +68,7 @@ export default function Resume() {
       setErrorMessage("Veuillez sélectionner un fichier.");
       return;
     }
-  
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("userId", loginData);
@@ -74,12 +76,12 @@ export default function Resume() {
       formData.append("portfolioUrl", portfolioUrl);
       formData.append("resume", resume); // Directement le fichier
       formData.append("coverLetter", coverLetter);
-  
+
       console.log("FormData contenu :");
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
-  
+
       const response = await postReq({
         data: formData,
         url: "/account/resume",
@@ -87,15 +89,16 @@ export default function Resume() {
         isFileUpload: true,
       });
       console.log(response);
-  
+      setLoading(false);
       if (response.status == 201) {
         navigate("/personalInfo");
       }
     } catch (err) {
+      setLoading(false);
       console.error("Erreur lors de l'envoi :", err);
     }
   };
-  
+
   return (
     <div className=" bg-gray-200  h-full bg-[url('/Rectangle.svg')] pb-8 bg-contain bg-no-repeat">
       <div className="flex flex-col gap-4 px-4 lg:px-12 w-full">
@@ -254,6 +257,13 @@ export default function Resume() {
               <button
                 onClick={addResume}
                 className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
+                <ClipLoader
+                  color="#fff"
+                  loading={Loading}
+                  size={25}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
                 <ArrowRight2 size={18} color="#fff" />
                 <span>Continue</span>
               </button>
