@@ -1,36 +1,104 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ArrowLeft2,
   ArrowRight2,
   CallCalling,
+  Document,
   DocumentUpload,
   InfoCircle,
 } from "iconsax-react";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import postReq from "../../utils/PostReq";
 import { useNavigate } from "react-router-dom";
+import { useSession } from "../../context/SessionContext";
+import { ClipLoader } from "react-spinners";
 
 export default function Resume() {
-  const file = useRef<HTMLInputElement | null>();
-  // const [linkedinUrl, setLinkedinUrl] = useState("");
-  // const [portfolioUrl, setPortfolioUrl] = useState("");
-  // const [coverLetter, setCoverLetter] = useState("");
+  const fileInputRef = useRef(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [coverLetter, setCoverLetter] = useState("");
+  const [resume, setResume] = useState<File | null>(null);
+  const [isFile, setIsFile] = useState(false);
   const navigate = useNavigate();
+  const [Loading, setLoading] = useState(false);
+  const { session, loginData } = useSession();
+  const extras = [{ key: "authorization", value: "Bearer " + session }];
 
-  const ChooseFile = () => {
-    file.current?.click();
+  const handleDivClick = () => {
+    if (fileInputRef.current) {
+      (fileInputRef.current as any).click();
+    }
+  };
+
+  console.log(session, loginData);
+
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (file) {
+      setIsFile(true);
+
+      if (file.type !== "application/pdf") {
+        setErrorMessage("Le fichier doit être au format PDF.");
+        return;
+      }
+
+      // Vérifier si la taille du fichier dépasse 10 Mo
+      const maxSizeInBytes = 10 * 1024 * 1024; // 10 Mo
+      if (file.size > maxSizeInBytes) {
+        setErrorMessage("Le fichier ne doit pas dépasser 10 Mo.");
+        return;
+      }
+
+      setResume(file);
+      // Si tout est bon
+      setSuccessMessage(`Fichier accepté : ${file.name}`);
+      console.log("Fichier accepté :", file);
+    }
   };
 
   const addResume = async () => {
+    if (!resume) {
+      setErrorMessage("Veuillez sélectionner un fichier.");
+      return;
+    }
+    setLoading(true);
     try {
-      const res = await postReq({ url: "/account/resume", data: {} });
-      if (res.status == 201) {
+      const formData = new FormData();
+      formData.append("userId", loginData);
+      formData.append("linkedinUrl", linkedinUrl);
+      formData.append("portfolioUrl", portfolioUrl);
+      formData.append("resume", resume); // Directement le fichier
+      formData.append("coverLetter", coverLetter);
+
+      console.log("FormData contenu :");
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
+
+      const response = await postReq({
+        data: formData,
+        url: "/account/resume",
+        extras,
+        isFileUpload: true,
+      });
+      console.log(response);
+      setLoading(false);
+      if (response.status == 201) {
         navigate("/personalInfo");
       }
     } catch (err) {
-      console.log("error :", err);
+      setLoading(false);
+      console.error("Erreur lors de l'envoi :", err);
     }
   };
+
   return (
     <div className=" bg-gray-200  h-full bg-[url('/Rectangle.svg')] pb-8 bg-contain bg-no-repeat">
       <div className="flex flex-col gap-4 px-4 lg:px-12 w-full">
@@ -100,6 +168,9 @@ export default function Resume() {
                   type="text"
                   className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 "
                   placeholder="Enter your linkedin profile url"
+                  onChange={(e) => {
+                    setLinkedinUrl(e.target.value);
+                  }}
                 />
               </div>
               <div className="flex flex-col relative gap-2 w-full">
@@ -108,23 +179,46 @@ export default function Resume() {
                   type="text"
                   className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 "
                   placeholder="Enter your portfolio url"
+                  onChange={(e) => {
+                    setPortfolioUrl(e.target.value);
+                  }}
                 />
               </div>
               <div className="flex flex-col relative gap-2 w-full">
                 <span className="font-semibold text-xs">Resume</span>
                 <div
-                  onClick={ChooseFile}
-                  className="flex flex-col gap-5 w-full"
-                >
+                  onClick={handleDivClick}
+                  className="flex flex-col gap-5 w-full">
                   <div className="flex flex-col items-center gap-2 justify-center border rounded-xl h-[220px] bg-[#fff]">
-                    <DocumentUpload size={25} color="#000" />
-                    <span>Click or Drag & Drop Your Resume</span>
+                    {isFile ? (
+                      <Document size={25} color="#000" />
+                    ) : (
+                      <DocumentUpload size={25} color="#000" />
+                    )}
+                    {isFile ? (
+                      <div>
+                        {" "}
+                        {errorMessage && (
+                          <p style={{ color: "red", marginTop: "10px" }}>
+                            {errorMessage}
+                          </p>
+                        )}
+                        {successMessage && (
+                          <p style={{ color: "green", marginTop: "10px" }}>
+                            {successMessage}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <span>Click or Drag & Drop Your Resume</span>
+                    )}
                   </div>
                 </div>
                 <input
-                  ref={file as React.MutableRefObject<HTMLInputElement | null>}
-                  type="text"
+                  ref={fileInputRef}
+                  type="file"
                   className="hidden"
+                  onChange={handleFileChange}
                 />
                 <div className="flex md:flex-row flex-col gap-2 text-sm justify-between items-center">
                   <span>Supported formats: PDF only</span>
@@ -143,8 +237,10 @@ export default function Resume() {
                     id=""
                     maxLength={240}
                     className=" border p-4 h-[148px] rounded-xl"
-                    placeholder="Write something about yourself"
-                  ></textarea>
+                    onChange={(e) => {
+                      setCoverLetter(e.target.value);
+                    }}
+                    placeholder="Write something about yourself"></textarea>
                   <div className="flex text-xs justify-between w-full items-center">
                     <span>You have 240 characters remaining</span>
                     <span>0/240</span>
@@ -160,8 +256,14 @@ export default function Resume() {
               </Link>
               <button
                 onClick={addResume}
-                className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] "
-              >
+                className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
+                <ClipLoader
+                  color="#fff"
+                  loading={Loading}
+                  size={25}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
                 <ArrowRight2 size={18} color="#fff" />
                 <span>Continue</span>
               </button>

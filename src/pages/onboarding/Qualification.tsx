@@ -1,38 +1,76 @@
 import { Add, ArrowLeft2, ArrowRight2, CallCalling } from "iconsax-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import { useSession } from "../../context/SessionContext";
+import postReq from "../../utils/PostReq";
 
 export default function Qualification() {
-  // State to manage skills and certifications fields
+  const [Loading, setLoading] = useState(false);
+  const { session, loginData } = useSession();
+  const extras = [{ key: "authorization", value: "Bearer " + session }];
   const [skills, setSkills] = useState([""]);
   const [certifications, setCertifications] = useState([""]);
   const [educationLevel, setEducationLevel] = useState("");
   const [field, setField] = useState("");
   const [qualification, setQualification] = useState("");
+  const navigate = useNavigate();
 
-  console.log(educationLevel, field, qualification);
-  // Handler to add a new skill field
   const addSkill = () => {
     setSkills([...skills, ""]);
   };
 
-  // Handler to add a new certification field
   const addCertification = () => {
     setCertifications([...certifications, ""]);
   };
 
-  // Handler to update the value of a specific skill field
   const updateSkill = (index: number, value: string) => {
     const updatedSkills = [...skills];
     updatedSkills[index] = value;
     setSkills(updatedSkills);
   };
 
-  // Handler to update the value of a specific certification field
+  const removeSkill = (index: number) => {
+    setSkills(skills.filter((_, i) => i !== index));
+  };
+
+  const removeCertification = (index: number) => {
+    setCertifications(certifications.filter((_, i) => i !== index));
+  };
+
   const updateCertification = (index: number, value: string) => {
     const updatedCertifications = [...certifications];
     updatedCertifications[index] = value;
     setCertifications(updatedCertifications);
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const response = await postReq({
+        data: {
+          userId: loginData,
+          educationLevel: educationLevel,
+          field: field,
+          skills,
+          certifications,
+          qualification: qualification,
+        },
+        url: "/account/education",
+        extras,
+      });
+
+      console.log(response);
+      setLoading(false);
+      if (response.status == 201) {
+        navigate("/done");
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error submitting form:", error);
+      alert("An error occurred while submitting the form.");
+    }
   };
 
   return (
@@ -109,11 +147,10 @@ export default function Qualification() {
                   onChange={(e) => {
                     setEducationLevel(e.target.value);
                   }}
-                  className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 "
-                >
-                  <option value="">Lorem ipsum 1</option>
-                  <option value="">Lorem ipsum 2 </option>
-                  <option value="">Lorem ipsum 3 </option>
+                  className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 ">
+                  <option value="Lorem ipsum 1">Lorem ipsum 1</option>
+                  <option value="Lorem ipsum 2">Lorem ipsum 2 </option>
+                  <option value="Lorem ipsum 3">Lorem ipsum 3 </option>
                 </select>
               </div>
               <div className="flex flex-col relative gap-2 w-full">
@@ -134,19 +171,27 @@ export default function Qualification() {
                   Skills and competencies*
                 </span>
                 {skills.map((skill, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 mb-2"
-                    placeholder="Add skills"
-                    value={skill}
-                    onChange={(e) => updateSkill(index, e.target.value)}
-                  />
+                  <div key={index} className="flex items-center gap-2 mb-2">
+                    <input
+                      type="text"
+                      className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4"
+                      placeholder="Add skills"
+                      value={skill}
+                      onChange={(e) => updateSkill(index, e.target.value)}
+                    />
+                    {index !== 0 && (
+                      <button
+                        onClick={() => removeSkill(index)}
+                        className="text-red-500 text-sm font-semibold">
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 ))}
+
                 <div
                   className="flex items-center font-medium text-sm text-[#571EC4] gap-1 cursor-pointer"
-                  onClick={addSkill}
-                >
+                  onClick={addSkill}>
                   <Add size={20} />
                   <span>Add another</span>
                 </div>
@@ -156,19 +201,29 @@ export default function Qualification() {
               <div className="flex flex-col gap-2 w-full">
                 <span className="font-semibold text-xs">Certifications*</span>
                 {certifications.map((certification, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4 mb-2"
-                    placeholder="Add certification"
-                    value={certification}
-                    onChange={(e) => updateCertification(index, e.target.value)}
-                  />
+                  <div key={index} className="flex items-center gap-2 mb-2">
+                    <input
+                      type="text"
+                      className="w-full bg-white border-gray-200 border rounded-[8px] py-3 px-4"
+                      placeholder="Add certification"
+                      value={certification}
+                      onChange={(e) =>
+                        updateCertification(index, e.target.value)
+                      }
+                    />
+                    {index !== 0 && (
+                      <button
+                        onClick={() => removeCertification(index)}
+                        className="text-red-500 text-sm font-semibold">
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 ))}
+
                 <div
                   className="flex items-center font-medium text-sm text-[#571EC4] gap-1 cursor-pointer"
-                  onClick={addCertification}
-                >
+                  onClick={addCertification}>
                   <Add size={20} />
                   <span>Add another</span>
                 </div>
@@ -186,8 +241,7 @@ export default function Qualification() {
                       setQualification(e.target.value);
                     }}
                     className=" border p-4 h-[148px] rounded-xl"
-                    placeholder="Write other qualifications if have"
-                  ></textarea>
+                    placeholder="Write other qualifications if have"></textarea>
                   <div className="flex text-xs justify-between w-full items-center">
                     <span>You have 240 characters remaining</span>
                     <span>0/240</span>
@@ -196,15 +250,24 @@ export default function Qualification() {
               </div>
             </div>
             <div className="flex gap-6 w-full  items-center">
-              <button className="border py-4 font-semibold rounded-lg w-full">
-                Skip for now
-              </button>
               <Link to="/done" className="flex w-full ">
-                <button className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
-                  <ArrowRight2 size={18} color="#fff" />
-                  <span>Continue</span>
+                <button className="border py-4 font-semibold rounded-lg w-full">
+                  Skip for now
                 </button>
               </Link>
+              <button
+                onClick={handleSubmit}
+                className="flex justify-center text-white rounded-lg items-center gap-3 py-4 w-full bg-[#F83E3E] ">
+                <ClipLoader
+                  color="#fff"
+                  loading={Loading}
+                  size={25}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+                <ArrowRight2 size={18} color="#fff" />
+                <span>Continue</span>
+              </button>
             </div>
           </div>
         </div>

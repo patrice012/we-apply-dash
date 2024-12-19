@@ -1,18 +1,19 @@
 import { useRef, useState } from "react";
 import { EyeSlash, Eye, Key, Sms, User } from "iconsax-react";
 import { Link } from "react-router-dom";
-import { sendOTP, signup, verifyOTP } from "../../utils/auth";
+import { googleSign, sendOTP, signup, verifyOTP } from "../../utils/auth";
 import { useNavigate } from "react-router-dom";
 import { signinWithGoogle } from "../../firebase/googleAuth";
+import { useSession } from "../../context/SessionContext";
 
 export default function Signup() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [password, setPassword] = useState("");
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
+  const { setSession, setLoginData } = useSession();
   const navigate = useNavigate();
   const [sendOtp, setSendOtp] = useState(false);
-  
 
   const googleLogin = async (e: {
     stopPropagation: () => void;
@@ -30,7 +31,19 @@ export default function Signup() {
           name: user.displayName,
         };
         console.log(data);
-        navigate("/Resume");
+        const sign = await googleSign({
+          fullname: data.name,
+          email: data.email,
+          password: data.uid,
+        });
+        console.log(sign);
+
+        if (sign.status == 201) {
+          const { token, userId } = sign.data;
+          setSession(token);
+          setLoginData(userId);
+          return navigate("/Resume");
+        }
       } else {
         console.log("error login with google");
       }
@@ -128,8 +141,13 @@ export default function Signup() {
       const res = await verifyOTP({ email, code });
       if (res.status == 200) {
         const sign = await signup({ fullname, email, password });
-        console.log(sign)
+        console.log(sign);
+
         if (sign.status == 201) {
+          const { token, userId } = sign.data;
+          console.log(token);
+          setSession(token);
+          setLoginData(userId);
           return navigate("/Resume");
         }
       }

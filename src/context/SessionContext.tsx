@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, createContext, type PropsWithChildren } from "react";
 import { useStorageState } from "../hooks/useStorageHook";
@@ -8,12 +9,14 @@ const AuthContext = createContext<{
   setSession: any;
   setLoginData: any;
   loginData: any;
+  iLoading: boolean;
 }>({
   session: null,
   isLoading: false,
   setSession: null,
   setLoginData: null,
   loginData: null,
+  iLoading: false,
 });
 
 // This hook can be used to access the user info.
@@ -30,8 +33,7 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [[_iLoading, loginData], setLoginData] = useStorageState("userData");
+  const [[iLoading, loginData], setLoginData] = useStorageState("userData");
 
   return (
     <AuthContext.Provider
@@ -41,6 +43,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         isLoading,
         setLoginData,
         loginData,
+        iLoading,
       }}>
       {children}
     </AuthContext.Provider>

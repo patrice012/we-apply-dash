@@ -56,7 +56,7 @@ const postReq = async ({ url, data, isFileUpload, extras }: requestProps) => {
     const response = await req.json();
     return { status: req.status, data: response };
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error catch:", error);
     return { status: 400, data: {} };
   }
 };

@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { signinWithGoogle } from "../../firebase/googleAuth";
 import { useNavigate } from "react-router-dom";
-import { signin } from "../../utils/auth";
+import { googleSign, signin } from "../../utils/auth";
+import { useSession } from "../../context/SessionContext";
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+   const { setSession, setLoginData } = useSession();
   const navigate = useNavigate();
 
   const googleLogin = async (e: {
@@ -28,7 +30,19 @@ export default function Login() {
           name: user.displayName,
         };
         console.log(data);
-        navigate("/Resume");
+        const sign = await googleSign({
+          fullname: data.name,
+          email: data.email,
+          password: data.uid,
+        });
+        console.log(sign);
+
+        if (sign.status == 201) {
+          const { token, userId } = sign.data;
+          setSession(token);
+          setLoginData(userId);
+          return navigate("/Resume");
+        }
       } else {
         console.log("error login with google");
       }
@@ -38,10 +52,15 @@ export default function Login() {
     }
   };
 
+
   const Login = async () => {
     try {
       const res = await signin({ email, password });
       if (res.status == 200) {
+        const { token, userId } = res.data;
+        console.log(token);
+        setSession(token);
+        setLoginData(userId);
         return navigate("/Resume");
       }
     } catch (err) {
